@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import model.Contato;
 import dao.ContatoDao;
+import java.util.Map;
+import javax.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
@@ -43,6 +46,7 @@ public class ContatosController {
         ModelAndView resultado = new ModelAndView();
         resultado.setViewName("contatos/form");
         
+        
         Contato contato = new Contato();
         resultado.getModel().put("contato", contato);
         
@@ -64,7 +68,12 @@ public class ContatosController {
     
     @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String save(@ModelAttribute("contato") Contato contato, final RedirectAttributes redirectAttributes) {
+    public String save(@Valid Contato contato, BindingResult bindingResult, Map<String, Object> model, final RedirectAttributes redirectAttributes) {
+        
+        if(bindingResult.hasErrors()){
+            model.put("contato", contato);
+            return "contatos/form";
+        }
         
         dao.save(contato);
         

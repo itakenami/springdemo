@@ -2,7 +2,19 @@
 <%@taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <%@ page session="false" %>
 
-<form id="contato" action="<c:url value="/contatos"/><c:choose><c:when test="${contato.id != null}">/update/${contato.id}</c:when><c:otherwise>/save</c:otherwise></c:choose>" method="POST" class="form-horizontal" enctype="multipart/form-data">
+
+<c:choose>
+    <c:when test="${contato.id != null}">
+        <c:url var="url" value="/contatos/update/${contato.id}"/>
+    </c:when>
+    <c:otherwise>
+        <c:url var="url" value="/contatos/save"/>
+    </c:otherwise>
+</c:choose>
+
+
+
+<sf:form action="${url}" method="POST" modelAttribute="contato">
 
         <fieldset>
             <div class="tabbable"> <!-- Only required for left/right tabs -->
@@ -22,7 +34,7 @@
 
                                 <input type="text" id="nome" name="nome" value="${contato.nome}" >
 
-                            <span class="errors badge badge-important"></span>
+                            <span class="errors badge badge-important"><sf:errors path="nome"/></span>
                             <span class="help-block helpbootstrap14"></span>
                         </div>
                     </div>
@@ -33,7 +45,7 @@
 
                             <input type="text" id="email" name="email" value="${contato.email}" >
 
-                            <span class="errors badge badge-important"></span>
+                            <span class="errors badge badge-important"><sf:errors path="email"/></span>
                             <span class="help-block helpbootstrap14">Descreva resumidamente o projeto.</span>
                         </div>
                     </div>
@@ -52,4 +64,4 @@
         <a href="${pageContext.request.contextPath}/contatos" class="btn">Cancelar</a>
     </div>
 
-</form>
+</sf:form>
